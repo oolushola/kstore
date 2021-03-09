@@ -1,0 +1,84 @@
+.product-form {
+    max-width: 20rem;
+    width: 90%;
+    margin: auto;
+}
+.form-control {
+    margin: 4px 0px;
+}
+.form-control label, 
+.form-control input {
+    display: block;
+    width:100%
+}
+.form-control input, textarea {
+    border: 1px solid #dbc441;
+    font: inherit;
+    border-radius: 2px;
+    outline: none;
+    padding:3px;
+    width: 100%;
+    padding: 5px
+}
+.form-control input::placeholder {
+    font-size: 11px;
+    font-family: tahoma;
+}
+button {
+    font: inherit;
+    border: 1px solid #dbc441;
+    background: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px
+}
+button:hover,
+button:active {
+    background:mediumpurple;
+    color:#fff
+}
+
+.card {
+    background: #fbfbfb;
+    border: 1px solid #000;
+    max-height:400px;
+    padding: 0;
+    max-width: 20%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    float: left;
+}
+
+.product-item {
+    display: inline-block;
+    margin: 5px 10px;
+}
+.card__header{
+    width: 100%;
+    text-align: center;
+    background: #ccc;
+    padding:2px 0
+}
+.product__title {
+    font-size: 18px;
+    font-family: monospace;
+}
+.card__content {
+    width: 100%;
+    text-align: center;
+}
+.card__content > .product__price {
+    font-size: 18px;
+    font-family:monospace;
+    margin: 0;
+    padding: 2px 0;
+}
+.card__content > .product__description {
+    font-size: 12px;
+    font-family: monospace;
+    background: #eeeeee;
+    padding: 5px 2px
+}
+.card__actions {
+    padding:5px 10px;
+}

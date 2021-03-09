@@ -1,0 +1,16 @@
+input, textarea {
+    margin: 0px 0px 20px 0px
+}
+
+label{
+    font-weight: bold;
+    font-size: 16px;
+    font-family: monospace;
+}
+
+/* textarea {
+    width: 100%;
+    border-radius: 2px;
+    padding: 5px;
+    border: 1px solid # 
+} */

@@ -1,0 +1,36 @@
+<%- include('../partials/head') %>
+    <link rel="stylesheet" type="text/css" href="/css/product.css">
+    <link rel="stylesheet" href="/css/form.css">
+</head>
+<body>
+    <%- include('../partials/navigation.ejs') %>
+    <main>
+        <% if(products.length > 0) { %>
+            <% for(let product of products) { %>
+                <div class="grid"> 
+                    <article class="card product-item">
+                        <header class="card__header">
+                            <h1 class="product__title"><%= product.title %></h1> 
+                        </header>
+                        <div class="card__image">
+                            <img src="https://cdn.elearningindustry.com/wp-content/uploads/2016/05/top-10-books-every-college-student-read-1024x640.jpeg" alt="A book" width="100%" height="100%" />
+                        </div>
+                        <div class="card__content">
+                            <h2 class="product__price">$<%= product.price %></h2>
+                            <p class="product__description"><%= product.description %></p>
+                        </div>
+                        <div class="card__actions">
+                            <button class="btn"><a href="/product-detail/<%= product._id %>">Details</a></button>
+                            <form action="/cart" method="POST">
+                                <button type="submit">Add to Cart</button>
+                                <input type="hidden" name="productId" value="<%= product._id %>">
+                            </form>
+                        </div>
+                    </article>
+                </div>
+            <% } %>
+        <% } else { %>
+            <h1>No product found!</h1>
+        <% } %>
+    </main>
+<%- include('../partials/end') %>

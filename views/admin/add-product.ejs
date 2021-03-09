@@ -1,0 +1,33 @@
+<%- include('../partials/head') %>
+    <link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="/css/form.css">
+</head>
+<body>
+    <%- include('../partials/navigation') %>
+    <!--  -->
+    <main>
+        
+        <form class="product-form" action="<% if(formMode) { %>/admin/update-product/<%= productInfo._id %><% } else { %>/admin/products<% } %>" method="POST">
+            <div class="form-control">
+                <label for="Product Name">Product Name</label>
+                <input type="text" name="productName" id="productName" placeholder="Enter the product name" value="<% if(formMode) { %><%= productInfo.title %><% } %>" />
+    
+                <label for="Price">Price</label>
+                <input type="number" name="productPrice" placeholder="Product price" id="price" value="<% if(formMode) { %><%= productInfo.price %><% } %>" step="0.01">
+    
+                <label for="Description">Description</label> 
+                <textarea name="description"><% if(formMode) { %><%= productInfo.description %><% } %></textarea>
+    
+                <label for="Image">Photo</label> 
+                <input type="file" name="image" placeholder="" id="photo">
+            </div>
+            <% if(formMode) { %>
+                <input type="hidden" name="productId" id="productId" value="<% if(formMode) { %><%= productInfo._id %><% } %>">
+            <button type="submit">Update Product</button>
+            <% } else { %>
+            <button type="submit">Add Product</button>
+            <% } %>
+
+        </form>
+    </main>    
+<%- include('../partials/end') %>

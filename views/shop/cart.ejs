@@ -1,0 +1,29 @@
+<%- include('../partials/head') %>
+    <link rel="stylesheet" type="text/css" href="/css/product.css">
+    <link rel="stylesheet" href="/css/form.css">
+</head>
+<body>
+    <%- include('../partials/navigation.ejs') %>
+    <main>
+        <h1>Cart</h1>
+        <% if(products.length > 0) { %>
+            <ul class="cart__list-item">
+                <% products.forEach(p => { %>
+                    <li class="cart__item">
+                        <h1><%= p.title %></h1>
+                        <h2><%= p.quantity %></h2>
+                        <form action="/cart-delete-item" method="POST">
+                            <input type="hidden" value="<%= p._id %>" name="productId">
+                            <button>Remove</button>
+                        </form>
+                    </li>
+                <% }) %>
+                <form action="/create-order" method="POST">
+                    <button type="submit">CREATE ORDER</button>
+                </form>
+            </ul>
+            <% } else { %>
+            <h2>No product in cart</h2>
+            <% } %>
+    </main>
+<%- include('../partials/end') %>
