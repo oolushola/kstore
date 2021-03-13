@@ -40,7 +40,8 @@ const getEditProduct = (req, res, next) => {
             pageTitle: 'Edit Product', 
             pathName: req.url, 
             formMode, 
-            productInfo: product 
+            productInfo: product,
+            isAuthenticated: req.session.isLoggedIn 
         })
     })
     .catch(err => {
@@ -72,11 +73,14 @@ const getAdminProduct = (req, res, next) => {
     Product.find()
     .populate('userId ')
     .then((result) => {
+        console.log(req.session)
+
         res.render('admin/products', { 
             pageTitle: 'Admin Products', 
             pathName: req.url, 
             products:result,
-            isAuthenticated: req.session.user 
+            isAuthenticated: req.session.isLoggedIn,
+            csrfToken: req.csrfToken() 
         })
     })
     .catch(err => {

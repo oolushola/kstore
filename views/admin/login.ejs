@@ -5,11 +5,14 @@
 <body>
     <%- include('../partials/navigation') %>
     <main>
-        
+        <% if(errorMessage) { %>
+        <div><%= errorMessage %></div>
+        <% } %>
         <form action="/admin/login" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <div>
-                Email: <input type="text">
-                password: <input type="password" name="" id="">
+                Email: <input type="text" name="email">
+                password: <input type="password" name="password" id="">
                 <button>Submit</button>
             </div>
         </form>

@@ -11,7 +11,8 @@ const getIndex = (req, res, next) => {
             products: products, 
             pageTitle: 'My Shop!', 
             pathName: '/shop',
-            isAuthenticated: req.session.isLoggedIn 
+            isAuthenticated: req.session.isLoggedIn,
+            csrfToken: req.csrfToken() 
         })
     })
     .catch(err => { 
