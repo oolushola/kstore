@@ -38,6 +38,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    password: {
+        type: String,
+        required: true
+    },
     cart: {
         items: [{
             productId: { type: mongoose.Types.ObjectId, required: true, ref: 'Product' },

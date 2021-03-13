@@ -25,9 +25,13 @@
                 <li style="float: right;">
                     <a href="/admin/login">Login</a>
                 </li>
+                <li style="float: right;">
+                    <a href="/admin/register">Sign Up</a>
+                </li>
             <% } else { %>
                 <form method="POST" action="/admin/logout">
                     <li class="main-header__item" style="float: right;">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <button type="submit">Logout</button>
                     </li>
                 </form>

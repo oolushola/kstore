@@ -6,9 +6,11 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const session = require('express-session')
 const MongoDbStore = require('connect-mongodb-session')(session)
+const csrf = require('csurf')
+const flash = require('connect-flash')
 
 const User = require('./models/user')
-const MONGODB_URI = 'mongodb+srv://Olushola:xHwWvjFmKYSQ4fxM@cluster0.qev4c.mongodb.net/shop?retryWrites=true&w=majority'
+const MONGODB_URI = 'mongodb+srv://Olushola:ZrNivMCZhmWx9KXy@cluster0.qev4c.mongodb.net/shop?retryWrites=true&w=majority'
 
 const app = express()
 const PORT = 3000
@@ -16,7 +18,6 @@ const store = new MongoDbStore({
     uri: MONGODB_URI,
     collection: 'sessions'
 })
-
 const path = require('path')
 
 app.set('view engine', 'ejs')
@@ -44,6 +45,15 @@ app.use((req, res, next) => {
             console.log(err)
         })
 })
+const csrfProtection = csrf({})
+app.use(csrfProtection)
+app.use(flash())
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.session.isLoggedIn
+    res.locals.csrfToken = req.csrfToken()
+    next()
+})
+
 app.use(shopRoute)
 app.use('/admin/', adminRoute)
 app.use('/user', userRoute)
@@ -56,18 +66,6 @@ mongoose.connect(MONGODB_URI, {
     useUnifiedTopology: true 
 })
 .then((client) => {
-    User.findOne().then(user=>{
-        if(!user) {
-            const user = new User({
-                name: 'Olushola Damilare',
-                email: 'odejobi.olushola@kayaafrica.co',
-                cart: {
-                    items: []
-                }
-            })
-            return user.save()
-        }
-    })
     app.listen(PORT, () => {
         console.log(`SERVER RUNNING ON PORT:${PORT}`)
     })
