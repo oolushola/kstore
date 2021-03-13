@@ -7,18 +7,31 @@
             <li class="main-header__item">
                 <a href="/products" class="<%= pathName === '/products' ? 'active' : '' %>">Products</a>
             </li>
-            <li class="main-header__item">
-                <a href="/cart" class="<%= pathName === '/cart' ? 'active' : '' %>">Cart</a>
-            </li>
-            <li class="main-header__item">
-                <a href="/orders" class="<%= pathName === '/orders' ? 'active' : '' %>">Orders</a>
-            </li>
-            <li class="main-header__item">
-                <a href="/admin/add-product" class="<%= pathName === '/add-product' ? 'active' : '' %>">Add Product</a>
-            </li>
-            <li class="main-header__item">
-                <a href="/admin/admin-product" class="<%= pathName === '/admin-product' ? 'active' : '' %>">Admin Product</a>
-            </li>
+            <% if(isAuthenticated) { %>
+                <li class="main-header__item">
+                    <a href="/cart" class="<%= pathName === '/cart' ? 'active' : '' %>">Cart</a>
+                </li>
+                <li class="main-header__item">
+                    <a href="/orders" class="<%= pathName === '/orders' ? 'active' : '' %>">Orders</a>
+                </li>
+                <li class="main-header__item">
+                    <a href="/admin/add-product" class="<%= pathName === '/add-product' ? 'active' : '' %>">Add Product</a>
+                </li>
+                <li class="main-header__item">
+                    <a href="/admin/admin-product" class="<%= pathName === '/admin-product' ? 'active' : '' %>">Admin Product</a>
+                </li> 
+           <% } %>
+           <% if(!isAuthenticated) { %>
+                <li style="float: right;">
+                    <a href="/admin/login">Login</a>
+                </li>
+            <% } else { %>
+                <form method="POST" action="/admin/logout">
+                    <li class="main-header__item" style="float: right;">
+                        <button type="submit">Logout</button>
+                    </li>
+                </form>
+            <% } %>
         </ul>
     </nav>
 </header>
