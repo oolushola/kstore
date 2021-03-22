@@ -10,7 +10,7 @@ const csrf = require('csurf')
 const flash = require('connect-flash')
 
 const User = require('./models/user')
-const MONGODB_URI = 'mongodb+srv://Olushola:ZrNivMCZhmWx9KXy@cluster0.qev4c.mongodb.net/shop?retryWrites=true&w=majority'
+const MONGODB_URI = 'mongodb+srv://Olushola:C8jI0DSi1hIwLcwr@cluster0.qev4c.mongodb.net/shop?retryWrites=true&w=majority'
 
 const app = express()
 const PORT = 3000

@@ -5,6 +5,18 @@ const productValidator = require('../utils/validator')
 const User = require('../models/user')
 const bcrypt = require('bcryptjs')
 const isAuth = require('../utils/middleware/is-auth')
+const crypto = require('crypto')
+
+const nodemailer = require('nodemailer')
+const sendgridTransport = require('nodemailer-sendgrid-transport')
+
+const transporter = nodemailer.createTransport(
+    sendgridTransport({
+        auth: {
+            api_key: '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'
+        }
+    })
+)
 
 router.get('/login', (req, res, next) => {
     // console.log(req.session)
@@ -72,8 +84,17 @@ router.post('/register', (req, res, next) => {
                     return newUser.save()
                 })
                 .then(response => {
-                    console.log(response)
                     res.redirect('/admin/login')
+                    return transporter.sendMail({
+                        to: email,
+                        from: 'odejobi.olushola@kayaafrica.co',
+                        subject: 'Sign up completed',
+                        html: '<h1>You successfuly signed up!</h1>'
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                    
                 })
                 .catch(err => {
                     console.log(err)
@@ -89,6 +110,104 @@ router.post('/logout', (req, res, next) => {
         res.redirect('/')
     })
 })
+
+router.get('/password-reset', (req, res, next) => {
+    res.render('auth/reset', {
+        pageTitle: 'Reset Password',
+        pathName: req.url,
+        errorMessage: req.flash('error')
+    })
+})
+
+router.post('/reset-user-password', (req, res, next) => {
+    crypto.randomBytes(64, (err, buffer) => {
+        if(err) {
+            req.flash('error', 'something went wrong')
+            console.log(error)
+            return res.redirect('/admin/password-reset')
+        }
+        const token = buffer.toString('hex')
+        User.findOne({ email: req.body.email })
+            .then(user => {
+                if(!user) {
+                    req.flash('error', 'No user found')
+                    return res.redirect('/admin/password-reset')
+                }
+                user.resetTokenExpiration = Date.now() + 3600000
+                user.resetToken = token
+                return user.save()
+            })
+            .then(userResult => {
+                console.log(userResult)
+                req.flash('error', 'email verification sent!')
+                res.redirect('/admin/password-reset')
+                return transporter.sendMail({
+                    from: 'odejobi.olushola@kayaafrica.co',
+                    to: req.body.email,
+                    subject: 'Password Reset',
+                    html: `
+                        <h3>Hi ${userResult.name}</h3>
+                        <p>You just requested for a password reset</p>
+                        <p>Click this <a href="http://localhost:3000/admin/reset/my-password/${token}">Link</a> to reset your password</p>
+                    `
+                })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    })
+})
+
+router.get('/reset/my-password/:token', (req, res, next) => {
+    const token = req.params.token;
+    User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now()}})
+        .then(user => {
+            if(!user) {
+                req.flash('error', 'We cant verify the validity of your password reset')
+                return res.redirect('/admin/password-reset')
+            }
+            res.render('auth/password-reset', {
+                pageTitle: 'Reset my password',
+                pathName: req.url,
+                errorMessage: '',
+                userId: user._id.toString(),
+                passwordToken: user.resetToken
+            })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+})
+
+router.post('/update-new-password', (req, res, next) => {
+    const { userId, newPassword, passwordToken } = req.body
+    let userResult;
+    User.findOne({
+        _id: userId,
+        resetToken: passwordToken,
+        resetTokenExpiration: {
+            $gt: Date.now()
+        }
+    })
+    .then(userInfo => {
+       userResult = userInfo
+       return bcrypt.hash(newPassword, 12)
+    })
+    .then(hashedPassword => {
+        userResult.password = hashedPassword
+        userResult.resetToken = undefined
+        userResult.resetTokenExpiration = undefined
+        return userResult.save()
+    })
+    .then(result => {
+        console.log(result)
+        res.redirect('/admin/login')
+    })
+    .catch(err => {
+        console.log(err)
+    })
+})
+
 router.get('/add-product', isAuth, adminController.getAddProducts)
 router.post('/products', isAuth, productValidator, adminController.saveAddProduct)
 router.get('/admin-product', isAuth, adminController.getAdminProduct)

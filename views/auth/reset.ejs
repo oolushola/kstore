@@ -1,0 +1,20 @@
+<%- include('../partials/head') %>
+    <link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="/css/form.css">
+</head>
+<body>
+    <%- include('../partials/navigation') %>
+    <main>
+        <% if(errorMessage) { %>
+        <div><%= errorMessage %></div>
+        <% } %>
+        <form class="product-form" action="/admin/reset-user-password" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="form-control">
+                <label for="Price">Email</label>
+                <input type="email" name="email" placeholder="john.doe@email.com">
+            </div>
+            <button type="submit">RESET</button>
+        </form>
+    </main>    
+<%- include('../partials/end') %>
