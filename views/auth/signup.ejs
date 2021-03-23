@@ -8,20 +8,20 @@
         <% if(errorMessage) { %>
         <div><%= errorMessage %></div>
         <% } %>
-        <form class="product-form" action="/admin/register" method="POST">
+        <form class="product-form" action="/admin/register" method="POST" novalidate>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <div class="form-control">
                 <label for="Product Name">Name</label>
-                <input type="text" name="fullName" id="" placeholder="John Doe" value="" />
+                <input type="text" name="fullName" id="" placeholder="John Doe" value="<%= oldInput.fullName %>" />
     
                 <label for="Price">Email</label>
-                <input type="email" name="email" placeholder="john.doe@email.com" id="price" value="">
+                <input type="email" name="email" placeholder="john.doe@email.com" id="price" value="<%= oldInput.email %>">
 
                 <label for="Price">Password</label>
-                <input type="password" name="password" placeholder="" id="price" value="">
+                <input type="password" name="password" placeholder="" id="price" value="<%= oldInput.password %>">
 
                 <label for="Price">Confirm Password</label>
-                <input type="password" name="confirmPassword" id="price" value="">
+                <input type="password" name="confirmPassword" id="price" value="<%= oldInput.confirmPassword %>">
     
             </div>
             <button type="submit">Sign Up!</button>

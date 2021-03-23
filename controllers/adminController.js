@@ -1,17 +1,34 @@
 const  Product  = require('../models/product')
-// const mongodb = require('mongodb')
+const { validationResult } = require('express-validator')
+const flash = require('connect-flash')
 
 const getAddProducts = (req, res, next) => {
     res.render('admin/add-product', { 
         pageTitle: 'Add Product', 
         pathName: req.url, 
         formMode: '',
-        isAuthenticated: req.session.isLoggedIn 
+        isAuthenticated: req.session.isLoggedIn,
     })
 }
 
 const saveAddProduct = (req, res, next) => {
     const { productName, productPrice, description, image } = req.body
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) {
+        return res.status.render('admin/add-product', { 
+            pageTitle: 'Add Product', 
+            pathName: req.url, 
+            formMode: '',
+            isAuthenticated: req.session.isLoggedIn,
+            oldInput: {
+                productName,
+                productPrice,
+                description,
+                image
+            },
+            errorMessage: errors.array()[0].msg
+        })
+    }
     const product = new Product({ 
         title: productName, 
         description: description, 

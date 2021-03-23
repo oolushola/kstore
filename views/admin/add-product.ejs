@@ -8,6 +8,7 @@
     <main>
         
         <form class="product-form" action="<% if(formMode) { %>/admin/update-product/<%= productInfo._id %><% } else { %>/admin/products<% } %>" method="POST">
+            <input type="text" name="_csrf" value="<%= csrfToken %>">
             <div class="form-control">
                 <label for="Product Name">Product Name</label>
                 <input type="text" name="productName" id="productName" placeholder="Enter the product name" value="<% if(formMode) { %><%= productInfo.title %><% } %>" />
