@@ -62,14 +62,8 @@ router.post('/products',
     isAuth, 
     [
         body('productName', 'Product name is required')
-            .notEmpty()
-            .trim()
-            .custom((value, {req}) => {
-                product.findOne({ product: value })
-                    .then(product => {
-
-                    })
-            }),
+            .isLength({ min: 6 })
+            .trim(),
         body('productPrice', 'Product price is required')
             .isFloat()
             .trim(),

@@ -7,7 +7,7 @@
     <!--  -->
     <main>
         
-        <form class="product-form" action="<% if(formMode) { %>/admin/update-product/<%= productInfo._id %><% } else { %>/admin/products<% } %>" method="POST">
+        <form action="<% if(formMode) { %>/admin/update-product/<%= productInfo._id %><% } else { %>/admin/products<% } %>" method="POST" enctype="multipart/form-data" class="product-form">
             <input type="text" name="_csrf" value="<%= csrfToken %>">
             <div class="form-control">
                 <label for="Product Name">Product Name</label>
@@ -19,8 +19,8 @@
                 <label for="Description">Description</label> 
                 <textarea name="description"><% if(formMode) { %><%= productInfo.description %><% } %></textarea>
     
-                <label for="Image">Photo</label> 
-                <input type="file" name="image" placeholder="" id="photo">
+                <label for="image">Photo</label> 
+                <input type="file" name="image" placeholder="" id="image">
             </div>
             <% if(formMode) { %>
                 <input type="hidden" name="productId" id="productId" value="<% if(formMode) { %><%= productInfo._id %><% } %>">

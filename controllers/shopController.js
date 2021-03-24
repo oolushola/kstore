@@ -2,6 +2,10 @@
 const Product = require('../models/product')
 const User = require('../models/user')
 const Order = require('../models/order')
+const path = require('path')
+const fs = require('fs')
+const PDFDocument = require('pdfkit')
+const { pipe } = require('pdfkit')
 
 // const ObjectId = mongodb.ObjectId
 
@@ -68,7 +72,7 @@ const cart = (req, res, next) => {
 
 const removeItemFromCart = (req, res, next)=> {
     const productId = req.body.productId
-    return req.session.user.removeFromCart(productId)
+    return req.user.removeFromCart(productId)
         .then(() => {
             console.log('UPDATED')
             res.redirect('/cart')
@@ -79,7 +83,7 @@ const removeItemFromCart = (req, res, next)=> {
 }
 
 const postOrder = (req, res, next) => {
-    req.session.user
+    req.user
         .populate('cart.items.productId')
         .execPopulate()
         .then(user => { 
@@ -133,7 +137,35 @@ const getOrders = (req, res, next) => {
         .catch(err => { 
             console.log(err)
         })
+}
+
+const getInvoices = (req, res, next) => {
+    const orderId = req.params.orderId
+    const invoiceName = 'invoice-'+orderId+'.pdf'
+    const invoicePath = path.join('data', 'invoices', invoiceName)
+//     fs.readFile(invoicePath, (err, data) => {
+//         if(err) {
+//             console.log(err)
+//             return false;
+//         }
+//         res.setHeader('Content-Type', 'application/pdf')
+//         res.setHeader('Content-Disposition', 'attachment', 'filename="'+invoiceName+'"')
+//         res.send(data)
+//     })
+// }
+    // const file = fs.createReadStream(invoicePath);
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader('Content-Disposition', 'attachment', 'filename="'+invoiceName+'"')
     
+    const pdfDoc = new PDFDocument()
+    pdfDoc.pipe(fs.createWriteStream(invoicePath))
+    pdfDoc.pipe(res)
+
+    pdfDoc.fontSize(26).text('Invoice', {
+        underline: true
+    })
+
+    pdfDoc.end()
 }
 
 module.exports = {
@@ -145,5 +177,6 @@ module.exports = {
     getOrders, 
     addProductToCart,
     removeItemFromCart,
-    postOrder
+    postOrder,
+    getInvoices
 }

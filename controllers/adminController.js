@@ -1,6 +1,7 @@
 const  Product  = require('../models/product')
 const { validationResult } = require('express-validator')
 const flash = require('connect-flash')
+const fileHelper = require('../utils/file')
 
 const getAddProducts = (req, res, next) => {
     res.render('admin/add-product', { 
@@ -12,10 +13,17 @@ const getAddProducts = (req, res, next) => {
 }
 
 const saveAddProduct = (req, res, next) => {
-    const { productName, productPrice, description, image } = req.body
+    const productName = req.body.productName
+    const productPrice = req.body.productPrice
+    const description = req.body.description
+    const imageUrl  = req.file
+    if(!imageUrl) {
+        console.log('Image type not accepted')
+        return false
+    }
     const errors = validationResult(req)
     if(!errors.isEmpty()) {
-        return res.status.render('admin/add-product', { 
+        return res.status(422).render('admin/add-product', { 
             pageTitle: 'Add Product', 
             pathName: req.url, 
             formMode: '',
@@ -29,6 +37,7 @@ const saveAddProduct = (req, res, next) => {
             errorMessage: errors.array()[0].msg
         })
     }
+    const image = imageUrl.path
     const product = new Product({ 
         title: productName, 
         description: description, 
@@ -68,12 +77,16 @@ const getEditProduct = (req, res, next) => {
 
 const patchUpdatedProduct = (req, res, next) => {
     const productId = req.params.productId
-    const { productName, productPrice, description, image } = req.body
+    const { productName, productPrice, description } = req.body
     Product.findById(productId)
         .then(product => {
             product.title = productName
             product.description = description
-            product.imageUrl = image
+            if(req.file) {
+                fileHelper(product.imageUrl)
+                product.imageUrl = req.file.path   
+            }
+           
             product.price = productPrice
             return product.save()
         })
@@ -90,8 +103,6 @@ const getAdminProduct = (req, res, next) => {
     Product.find()
     .populate('userId ')
     .then((result) => {
-        console.log(req.session)
-
         res.render('admin/products', { 
             pageTitle: 'Admin Products', 
             pathName: req.url, 
@@ -109,7 +120,7 @@ const deleteProduct = (req, res, next) => {
     productId = req.body.productId
     Product.findByIdAndRemove(productId)
         .then(result => {
-            console.log('PRODUCT DELETED!')
+            fileHelper(result.imageUrl)
             res.redirect('/admin/admin-product')
         })
         .catch(err => {
